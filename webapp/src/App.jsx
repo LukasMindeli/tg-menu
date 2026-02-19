@@ -87,7 +87,7 @@ export default function App() {
           <div className="brand">
             <div className="neonDot" />
             <div>
-              <div className="title">Coffee Club</div>
+              <div className="title">Glam Bar</div>
               <div className="subtitle">Бар • Кофе • Атмосфера</div>
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function App() {
           <div className="searchRow">
             <input
               className="search"
-              placeholder="Поиск по меню..."
+              placeholder="Пошук по меню..."
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -103,7 +103,7 @@ export default function App() {
               className={`chip ${hitsOnly ? "chipOn" : ""}`}
               onClick={() => setHitsOnly((v) => !v)}
               type="button"
-              title="Показывать только хиты"
+              title="Показувати лише хіти"
             >
               Хиты
             </button>
@@ -112,7 +112,7 @@ export default function App() {
           {/* маленькая подсказка, чтобы не путало */}
           {isSearchActive && (
             <div className="muted" style={{ marginTop: 8 }}>
-              Поиск по всему меню
+              Пошук по всьому меню
             </div>
           )}
 
@@ -134,7 +134,7 @@ export default function App() {
         <main className="main">
           <div className="grid">
             {filtered.length === 0 ? (
-              <div className="empty">Ничего не найдено.</div>
+              <div className="empty">Нічого не знайдено.</div>
             ) : (
               filtered.map((it) => {
                 const imgSrc = it.image ? getDishImage(it.image) : "";
@@ -187,11 +187,11 @@ export default function App() {
         {/* Footer */}
         <footer className="footer">
           <div className="footLine">
-            <span className="muted">Адрес:</span> Одесса •{" "}
-            <span className="muted">(впиши адрес)</span>
+            <span className="muted">Адреса:</span> Одеса •{" "}
+            <span className="muted">(Пантелеймонівська 53)</span>
           </div>
           <div className="footLine">
-            <span className="muted">Время:</span> <b>10:00–22:00</b>
+            <span className="muted">Час:</span> <b>10:00–22:00</b>
           </div>
         </footer>
       </div>
