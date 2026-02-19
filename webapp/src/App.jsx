@@ -191,7 +191,7 @@ export default function App() {
             <span className="muted">(Пантелеймонівська 53)</span>
           </div>
           <div className="footLine">
-            <span className="muted">Час:</span> <b>10:00–22:00</b>
+            <span className="muted">Часи роботи:</span> <b>10:00–22:00</b>
           </div>
         </footer>
       </div>
