@@ -5,7 +5,7 @@ export const MENU = [
   {
     id: 1,
     name: "Эспрессо",
-    price: 60,
+    price: 70,
     category: "coffee",
     desc: "Крепко, быстро, честно.",
     tags: ["хит"],
