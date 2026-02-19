@@ -1,0 +1,292 @@
+:root{
+  --bg:#0b0c10;
+  --panel: rgba(255,255,255,0.06);
+  --panel2: rgba(255,255,255,0.08);
+  --text:#e9eef6;
+  --muted:#9aa3b2;
+  --neon:#ff2d8d;
+  --neon2:#6ef0ff;
+  --stroke: rgba(255,255,255,0.14);
+  --shadow: 0 18px 60px rgba(0,0,0,0.45);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(900px 500px at 20% 0%, rgba(255,45,141,0.12), transparent),
+    radial-gradient(900px 500px at 80% 20%, rgba(110,240,255,0.10), transparent),
+    var(--bg);
+  color:var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+/* общий контейнер страницы */
+.page{
+  min-height: 100vh;
+}
+
+/* ===== Splash ===== */
+.splash{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(900px 500px at 20% 0%, rgba(255,45,141,0.20), transparent),
+    radial-gradient(900px 500px at 80% 20%, rgba(110,240,255,0.14), transparent),
+    rgba(0,0,0,0.75);
+  backdrop-filter: blur(14px);
+}
+
+.splashLogo{
+  width: min(520px, 70vw);
+  height: auto;
+  border-radius: 22px;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+}
+
+/* пока splash активен — контент не виден и не кликается */
+.isHidden{
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ===== Layout ===== */
+.wrap{
+  min-height: 100vh;
+  padding: 18px 14px;
+  gap: 14px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* панель */
+.top{
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  border: 1px solid var(--stroke);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+}
+
+.neonDot{
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--neon);
+  box-shadow: 0 0 18px rgba(255,45,141,0.65), 0 0 36px rgba(255,45,141,0.35);
+}
+
+.title{
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.subtitle{
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.searchRow{
+  display:flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.search{
+  flex:1;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid var(--stroke);
+  color: var(--text);
+  padding: 12px 12px;
+  outline: none;
+}
+
+.chip{
+  border-radius: 14px;
+  padding: 12px 12px;
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,0.25);
+  color: var(--text);
+  cursor:pointer;
+  white-space: nowrap;
+}
+
+.chipOn{
+  border-color: rgba(255,45,141,0.65);
+  box-shadow: 0 0 18px rgba(255,45,141,0.18);
+}
+
+.tabs{
+  display:flex;
+  gap: 8px;
+  margin-top: 12px;
+  overflow:auto;
+  padding-bottom: 2px;
+}
+
+.tab{
+  border-radius: 999px;
+  padding: 10px 12px;
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,0.22);
+  color: var(--text);
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.tabOn{
+  border-color: rgba(110,240,255,0.65);
+  box-shadow: 0 0 18px rgba(110,240,255,0.18);
+}
+
+.main{
+  min-width: 0;
+}
+
+/* сетка блюд */
+.grid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  align-content: start;
+}
+
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+  border: 1px solid var(--stroke);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* блок картинки */
+.cardMedia{
+  width: 100%;
+  height: 170px;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,0.25);
+  margin-bottom: 12px;
+}
+
+.cardImg{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cardImgFallback{
+  width: 100%;
+  height: 100%;
+  display:grid;
+  place-items:center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.cardTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap: 12px;
+}
+
+.cardName{
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.money{
+  font-weight: 800;
+  color: var(--neon2);
+  text-shadow: 0 0 14px rgba(110,240,255,0.25);
+}
+
+.cardDesc{
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.35;
+}
+
+.tagRow{
+  display:flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap:wrap;
+}
+
+.pill{
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,0.22);
+}
+
+.empty{
+  padding: 18px;
+  text-align:center;
+  color: var(--muted);
+}
+
+/* футер компактный */
+.footer{
+  width: fit-content;
+  max-width: 100%;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,0.04);
+}
+
+.footLine{margin: 4px 0;}
+.muted{color: var(--muted);}
+
+/* ===== Desktop layout: панель слева, блюда справа ===== */
+@media (min-width: 900px){
+  .wrap{
+    display:grid;
+    grid-template-columns: 360px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .top{
+    position: sticky;
+    top: 16px;
+    align-self: start;
+  }
+
+  .grid{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer{
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+
+/* ===== На широких экранах 3 колонки ===== */
+@media (min-width: 1200px){
+  .grid{
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
