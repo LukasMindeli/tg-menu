@@ -32,16 +32,29 @@ export default function App() {
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
 
-    return MENU.filter((it) => {
-      if (tab && it.category !== tab) return false;
-      if (hitsOnly && !it.tags?.includes("хит")) return false;
+    // ВАЖНО:
+    // - если query есть: ищем по ВСЕМ категориям (таб игнорируем)
+    // - если query пустой: фильтруем по текущей вкладке
+    const baseList = query
+      ? MENU
+      : MENU.filter((it) => !tab || it.category === tab);
 
-      if (!query) return true;
+    // фильтр хитов применяем всегда (и при поиске, и без)
+    const afterHits = hitsOnly
+      ? baseList.filter((it) => it.tags?.includes("хит"))
+      : baseList;
 
+    // если нет поиска — уже можно возвращать
+    if (!query) return afterHits;
+
+    // поиск по name + desc + tags
+    return afterHits.filter((it) => {
       const hay = `${it.name} ${it.desc} ${(it.tags || []).join(" ")}`.toLowerCase();
       return hay.includes(query);
     });
   }, [tab, q, hitsOnly]);
+
+  const isSearchActive = q.trim().length > 0;
 
   return (
     <div className="page">
@@ -95,6 +108,13 @@ export default function App() {
               Хиты
             </button>
           </div>
+
+          {/* маленькая подсказка, чтобы не путало */}
+          {isSearchActive && (
+            <div className="muted" style={{ marginTop: 8 }}>
+              Поиск по всему меню
+            </div>
+          )}
 
           <div className="tabs">
             {TABS.map((t) => (
@@ -167,7 +187,8 @@ export default function App() {
         {/* Footer */}
         <footer className="footer">
           <div className="footLine">
-            <span className="muted">Адрес:</span> Одесса • <span className="muted">(впиши адрес)</span>
+            <span className="muted">Адрес:</span> Одесса •{" "}
+            <span className="muted">(впиши адрес)</span>
           </div>
           <div className="footLine">
             <span className="muted">Время:</span> <b>10:00–22:00</b>
