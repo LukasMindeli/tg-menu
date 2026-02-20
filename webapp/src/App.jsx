@@ -1,10 +1,8 @@
-// src/App.jsx
+// webapp/src/App.jsx
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./App.css";
 
-import logo from "./assets/logo.png";
-import splashVideo from "./assets/splash.mp4";
 import { MENU, TABS } from "./menuData";
 
 function formatUAH(n) {
@@ -13,7 +11,6 @@ function formatUAH(n) {
 
 // Картинки блюд берём из src/assets/menu/*
 function getDishImage(fileName) {
-  // Vite: динамический URL из папки assets
   return new URL(`./assets/menu/${fileName}`, import.meta.url).href;
 }
 
@@ -22,44 +19,37 @@ export default function App() {
   const [q, setQ] = useState("");
   const [hitsOnly, setHitsOnly] = useState(false);
 
-  // Splash (лого)
+  // Splash (видео)
   const [showSplash, setShowSplash] = useState(true);
 
+  // запасной таймер, если вдруг видео не сыграет (например, старый браузер)
   useEffect(() => {
-    const t = setTimeout(() => setShowSplash(false), 1300);
+    const t = setTimeout(() => setShowSplash(false), 3500);
     return () => clearTimeout(t);
   }, []);
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
 
-    // ВАЖНО:
-    // - если query есть: ищем по ВСЕМ категориям (таб игнорируем)
-    // - если query пустой: фильтруем по текущей вкладке
-    const baseList = query
-      ? MENU
-      : MENU.filter((it) => !tab || it.category === tab);
+    // ЛОГИКА ПОИСКА:
+    // - если query пустой -> фильтруем по активной категории
+    // - если query есть -> ищем по ВСЕМ категориям (то, что ты хотел раньше)
+    return MENU.filter((it) => {
+      if (hitsOnly && !it.tags?.includes("хит")) return false;
 
-    // фильтр хитов применяем всегда (и при поиске, и без)
-    const afterHits = hitsOnly
-      ? baseList.filter((it) => it.tags?.includes("хит"))
-      : baseList;
+      if (query) {
+        const hay = `${it.name} ${it.desc} ${(it.tags || []).join(" ")}`.toLowerCase();
+        return hay.includes(query);
+      }
 
-    // если нет поиска — уже можно возвращать
-    if (!query) return afterHits;
-
-    // поиск по name + desc + tags
-    return afterHits.filter((it) => {
-      const hay = `${it.name} ${it.desc} ${(it.tags || []).join(" ")}`.toLowerCase();
-      return hay.includes(query);
+      if (tab && it.category !== tab) return false;
+      return true;
     });
   }, [tab, q, hitsOnly]);
 
-  const isSearchActive = q.trim().length > 0;
-
   return (
     <div className="page">
-      {/* Splash: меню не видно пока showSplash=true */}
+      {/* Splash: показываем только видео, меню не видно */}
       <AnimatePresence>
         {showSplash && (
           <motion.div
@@ -68,30 +58,31 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <motion.img
+            <motion.video
               className="splashVideo"
-  src={splashVideo}
-  autoPlay
-  muted
-  playsInline
-  preload="auto"
-  initial={{ scale: 1, opacity: 0 }}
-  animate={{ scale: 1, opacity: 1 }}
-  exit={{ scale: 1, opacity: 0 }}
-  transition={{ duration: 0.45 }}
+              src="/splash.mp4"
+              autoPlay
+              muted
+              playsInline
+              preload="auto"
+              onEnded={() => setShowSplash(false)}
+              initial={{ opacity: 0, scale: 0.995 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.995 }}
+              transition={{ duration: 0.45 }}
             />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Контент рендерим всегда, но визуально скрываем пока splash */}
+      {/* Контент: НЕ показываем, пока splash */}
       <div className={`wrap ${showSplash ? "isHidden" : ""}`}>
         {/* Left / top panel */}
         <div className="top">
           <div className="brand">
             <div className="neonDot" />
             <div>
-              <div className="title">Glam Bar</div>
+              <div className="title">Coffee Club</div>
               <div className="subtitle">Бар • Кофе • Атмосфера</div>
             </div>
           </div>
@@ -99,7 +90,7 @@ export default function App() {
           <div className="searchRow">
             <input
               className="search"
-              placeholder="Пошук по меню..."
+              placeholder="Поиск по меню..."
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -107,18 +98,11 @@ export default function App() {
               className={`chip ${hitsOnly ? "chipOn" : ""}`}
               onClick={() => setHitsOnly((v) => !v)}
               type="button"
-              title="Показувати лише хіти"
+              title="Показывать только хиты"
             >
               Хиты
             </button>
           </div>
-
-          {/* маленькая подсказка, чтобы не путало */}
-          {isSearchActive && (
-            <div className="muted" style={{ marginTop: 8 }}>
-              Пошук по всьому меню
-            </div>
-          )}
 
           <div className="tabs">
             {TABS.map((t) => (
@@ -127,6 +111,8 @@ export default function App() {
                 className={`tab ${tab === t.id ? "tabOn" : ""}`}
                 onClick={() => setTab(t.id)}
                 type="button"
+                disabled={q.trim().length > 0} // когда идет поиск по всем категориям — табы логически “не главные”
+                title={q.trim().length > 0 ? "Очисти поиск, чтобы фильтровать по категории" : ""}
               >
                 {t.label}
               </button>
@@ -138,7 +124,7 @@ export default function App() {
         <main className="main">
           <div className="grid">
             {filtered.length === 0 ? (
-              <div className="empty">Нічого не знайдено.</div>
+              <div className="empty">Ничего не найдено.</div>
             ) : (
               filtered.map((it) => {
                 const imgSrc = it.image ? getDishImage(it.image) : "";
@@ -151,15 +137,9 @@ export default function App() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25 }}
                   >
-                    {/* MEDIA */}
                     <div className="cardMedia">
                       {imgSrc ? (
-                        <img
-                          className="cardImg"
-                          src={imgSrc}
-                          alt={it.name}
-                          loading="lazy"
-                        />
+                        <img className="cardImg" src={imgSrc} alt={it.name} loading="lazy" />
                       ) : (
                         <div className="cardImgFallback">Нет фото</div>
                       )}
@@ -191,11 +171,11 @@ export default function App() {
         {/* Footer */}
         <footer className="footer">
           <div className="footLine">
-            <span className="muted">Адреса:</span> Одеса •{" "}
-            <span className="muted">(Пантелеймонівська 53)</span>
+            <span className="muted">Адрес:</span> Одесса •{" "}
+            <span className="muted">(впиши адрес)</span>
           </div>
           <div className="footLine">
-            <span className="muted">Часи роботи:</span> <b>10:00–22:00</b>
+            <span className="muted">Время:</span> <b>10:00–22:00</b>
           </div>
         </footer>
       </div>
