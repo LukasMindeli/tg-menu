@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import "./App.css";
 
 import logo from "./assets/logo.png";
+import splashVideo from "./assets/splash.mp4";
 import { MENU, TABS } from "./menuData";
 
 function formatUAH(n) {
@@ -68,13 +69,16 @@ export default function App() {
             exit={{ opacity: 0 }}
           >
             <motion.img
-              src={logo}
-              alt="logo"
-              className="splashLogo"
-              initial={{ scale: 0.92, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.98, opacity: 0 }}
-              transition={{ duration: 0.45 }}
+              className="splashVideo"
+  src={splashVideo}
+  autoPlay
+  muted
+  playsInline
+  preload="auto"
+  initial={{ scale: 1, opacity: 0 }}
+  animate={{ scale: 1, opacity: 1 }}
+  exit={{ scale: 1, opacity: 0 }}
+  transition={{ duration: 0.45 }}
             />
           </motion.div>
         )}
